@@ -1,0 +1,1 @@
+# A simple repo for deploying HashiVault via Ansible.
