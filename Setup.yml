@@ -1,0 +1,26 @@
+# setup.yml
+
+---
+  - hosts: webserver
+    become: true
+    vars:
+      path_to_app: "/var/www/html"
+
+    tasks:
+      copy:
+        src: ./index.php
+        dest: "{{ path_to_app }}"
+        mode: 0755
+
+  - name: Create info page
+    copy:
+      dest: "{{ path_to_app }}"/info.php
+      content: "<h1>{{ ansible_hostname }}</h1>"
+
+  - name: See Dir
+    command: ls -la {{ path_to_app }}
+    register: dir_contents
+
+  - name: Debug Dir Contents
+    debug:
+      msg: "{{ dir_contents }}"
