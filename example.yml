@@ -1,0 +1,15 @@
+# example
+
+---
+vars:
+  path_to_app: "/var/www/html"
+  another: "sumthing else"
+
+task:
+  - name: See Directory Contents
+    command: ls -la {{ path_to_app }}
+    register: dir_contents
+
+  - name: Debug directory contents
+    debug:
+      msg: "{{ dir_contents }}"
