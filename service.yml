@@ -1,0 +1,28 @@
+# services.yml
+
+---
+
+  - hosts: webservers
+    become: true
+    tasks:
+      - name: Installing Services
+        yum:
+          name:
+            - httpd
+            - php
+          state: present
+      - name: Enable service
+        service: name=httpd state=started enable=yes
+
+      - name: Configure php.ini file
+        lineinfile:
+          path: /etc/php.ini
+          regexp: ^short_open_tag
+          line: 'short_open_tag=On'
+        notify: restart apache
+
+    handlers:
+      - name: restart apache
+        service: name=httpd state=restarted
+
+        
