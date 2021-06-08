@@ -1,8 +1,0 @@
-# Update servers
-
----
-
-  - hosts: webservers
-    tasks:
-      - name: Update servers
-        yum: name=* state=latest
