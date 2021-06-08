@@ -1,0 +1,88 @@
+# Packer will call this playbook.
+
+---
+  - name: Installing all vault * consul automation requirements.
+    hosts: all
+
+    tasks:
+
+      - name: Creating /etc/cluster-conf directory
+        ansible.builtin.file:
+          path: /etc/vault/
+          state: directory
+          mode: '0755'
+        tags: vault
+
+      - name: Copy Vault certificates
+        copy:
+          src: /certificates/
+          dest: /opt/vault/tls/
+        tags: vault
+
+      - name: Copy license service locally to the /etc/systemd/system/ directory
+        copy:
+          src: /services/license.service
+          dest: /etc/systemd/system/
+      
+      - name: Copy vault license files locally to the /tmp directory
+        copy:
+          src: /services/vault/license/
+          dest: /tmp
+        tags: vault
+      
+      - name: Copy consul license files locally to the /tmp directory
+        copy:
+          src: /services/consul/license/
+          dest: /tmp
+        tags: consul
+
+      - name: Enabling licensing service
+        ansible.builtin.systemd:
+          name: licence
+          enabled: yes
+          masked: no
+      
+      - name: Copy Vault requirements
+        copy:
+          src: /services/vault
+          dest: /tmp
+        tags: vault
+      
+      - name: Copy Consul requirements
+        copy:
+          src: /services/consul
+          dest: /tmp
+      
+      - name: Placing files in proper positions
+        command: mv /tmp/*.service /etc/systemd/system/ && mv /tmp/*.{hcl,json} /etc/cluster-conf/
+      
+      - name: Enabling vault service
+        ansible.builtin.systemd:
+          name: vault
+          state: started
+          enabled: yes
+          masked: no
+      
+      - name: Enabling consul-agent service
+        ansible.builtin.systemd:
+          name: consul
+          state: started
+          enabled: yes
+          masked: no
+      
+      - name: Enabling consul-server service
+        ansible.builtin.systemd:
+          name: consul
+          state: started
+          enabled: yes
+          masked: no
+
+      - name: Install HashiVault via a logical install script.
+        script: ./install.sh vault 1.7.2
+      
+      - name: Install HashiConsul via a logical install script
+        script: ./install.sh consul 1.9.6
+        
+        
+
+    

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Will be copied to /etc/systemd/system/license_check.service
+
+[Unit]
+Description= Run the license check script after all systemd services have been started.
+After=default.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/tmp/license.sh
+TimeoutStartSec=0
+
+[Timer]
+OnBootSec=3min
+
+[Install]
+WantedBy=default.target

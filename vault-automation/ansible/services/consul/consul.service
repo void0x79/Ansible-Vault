@@ -1,0 +1,18 @@
+[Unit]
+Description=Consul Server Configuration Service
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/tmp/consul-server.json
+
+[Service]
+User=ec2-user
+Group=ec2-user
+LimitNOFILE=65536
+ExecStart=/usr/bin/consul agent -config-dir=/etc/cluster-conf/consul-server.json
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
