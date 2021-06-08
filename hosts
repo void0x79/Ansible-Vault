@@ -1,9 +1,0 @@
-# inventory
-
-[webservers]
-server1 ansible_host=
-server2 ansible_host=
-server3 ansible_host=
-
-[local]
-control ansible_connection=local 
